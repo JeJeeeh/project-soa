@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
+import { InjectApiKey } from '../middlewares/middewares';
 
-import { Request, Response } from 'express';
+router.get('/bibles',  InjectApiKey, () => {
 
-module.exports = router;
+});
+
+export default router

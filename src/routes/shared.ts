@@ -5,4 +5,4 @@ import { login, register } from '../controllers/sharedController';
 router.post('/login', login);
 router.post('/register', register)
 
-module.exports = router;  
+export default router;  

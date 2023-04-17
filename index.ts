@@ -7,8 +7,8 @@ const app = express();
 const port = process.env.PORT;
 
 const base_prefix = '/api/v1';
-const sharedRoutes = require('./src/routes/shared');
-const bibleRoutes = require('./src/routes/bibles');
+import sharedRoutes from './src/routes/shared';
+import bibleRoutes from './src/routes/bibles';
 
 app.use(`/${base_prefix}`, sharedRoutes);
 app.use(`/${base_prefix}/bibles`, bibleRoutes);
