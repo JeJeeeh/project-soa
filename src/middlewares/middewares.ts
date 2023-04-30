@@ -1,20 +1,20 @@
-import {Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-function BearerToken(req: Request, res: Response, next: NextFunction) {
+const bearerToken = (req: Request, res: Response, next: NextFunction) : Response | void => {
     const token = req.headers.authorization;
     if (token) {
         next();
     } else {
         return res.status(401).send('Unauthorized');
     }
-}
+};
 
-    const InjectApiKey = (req: Request, res: Response, next: NextFunction) => {
-        req.headers['api-key'] = process.env.API_KEY;
-        next();
-    }
+const injectApiKey = (req: Request, res: Response, next: NextFunction) : void => {
+    req.headers['api-key'] = process.env.API_KEY;
+    next();
+};
 
 export {
-    BearerToken,
-    InjectApiKey
-}
+    bearerToken,
+    injectApiKey,
+};

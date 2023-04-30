@@ -1,8 +1,9 @@
-import { Router } from "express";
-const router = Router();
-import { Request, Response } from "express";
-import { BearerToken } from "../middlewares/middewares";
+import { Router, Response, Request } from 'express';
+const router: Router = Router();
+import { bearerToken } from '../middlewares/middewares';
 
-router.get('/collections', BearerToken, () => {});
+router.get('/collections', bearerToken, (req: Request, res: Response) => {
+    res.send('collections');
+});
 
 module.exports = router;
