@@ -4,6 +4,7 @@ import sharedRoutes from './src/routes/shared';
 import bibleRoutes from './src/routes/bibles';
 import { BibleExceptions } from './src/exceptions/bibleExceptions';
 import { StatusCode } from './src/helpers/statusCode';
+import chapterRoutes from './src/routes/chapters';
 
 dotenv.config();
 
@@ -15,8 +16,12 @@ const basePrefix = '/api/v1';
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.set('Content-Type', 'application/json');
+app.set('x-powered-by', false);
+
 app.use(`${ basePrefix }`, sharedRoutes);
 app.use(`${ basePrefix }/bibles`, bibleRoutes);
+app.use(`${ basePrefix }/bibles`, chapterRoutes);
 
 app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
 	if (err instanceof BibleExceptions) {
@@ -34,6 +39,14 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 	return;
 
 	next();
+});
+
+app.all('*', (req: Request, res: Response) => {
+	res.status(404).json({
+		status: 404,
+		message: 'Are you lost?',
+	});
+	return;
 });
 
 app.listen(port, () => {

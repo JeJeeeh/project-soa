@@ -39,6 +39,8 @@ interface IBibleData {
 
     copyright?: string;
     info?: string;
+
+    audioBibles?: unknown[];
 }
 
 interface IQueryBible {
@@ -55,7 +57,10 @@ export const getBibles = async (req: Request, res: Response): Promise<void> => {
     const bibleResponse: AxiosResponse<IBibles> = await axios.get('/bibles', {
         params: filteredQ,
     });
-    const bible: IBibleData[] = bibleResponse.data.data;
+    const bible: IBibleData[] = bibleResponse.data.data.map(rest => {
+        delete rest.audioBibles;
+        return rest;
+    });
 
     res.status(StatusCode.OK).json(bible);
     return;
@@ -66,6 +71,8 @@ export const getBible = async (req: Request, res: Response): Promise<void> => {
 
     const bibleResponse: AxiosResponse<IBible> = await axios.get(`/bibles/${ bibleId }`);
     const bible: IBibleData = bibleResponse.data.data;
+
+    delete bible.audioBibles;
 
     res.status(StatusCode.OK).json(bible);
     return;
