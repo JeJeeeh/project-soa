@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
 }
 
 datasource db {
@@ -21,10 +22,22 @@ model User {
 }
 
 model Collection {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  userId        Int
+  user          User            @relation(fields: [userId], references: [id])
+  Subcollection Subcollection[]
+}
+
+model Subcollection {
+  id           Int        @id @default(autoincrement())
+  name         String
+  description  String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  collectionId Int
+  collection   Collection @relation(fields: [collectionId], references: [id])
 }

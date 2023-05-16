@@ -29,7 +29,4 @@ axios.interceptors.response.use(
     },
 );
 
-console.log(`API_KEY: ${ API_KEY }`);
-
-
 export default axios;
