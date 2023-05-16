@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import joi from 'joi';
+import joi, { ObjectSchema } from 'joi';
 import { StatusCode } from '../helpers/statusCode';
 import axios from '../config/axiosConfig';
 import { AxiosResponse } from 'axios';
@@ -67,7 +67,7 @@ export const getChapters = async (req: Request, res: Response): Promise<void> =>
     const q: IQueryChapters = { bibleId: req.params.bibleId, bookId: req.params.bookId };
 
     const regexQuery = new RegExp(/^[^:].*$/);
-    const schema = joi.object({
+    const schema: ObjectSchema = joi.object({
         bibleId: joi.string().pattern(regexQuery).required(),
         bookId: joi.string().pattern(regexQuery).required(),
     });
@@ -91,7 +91,7 @@ export const getChapter = async (req: Request, res: Response): Promise<void> => 
     const q: IParamChapter = { bibleId: req.params.bibleId, chapterId: req.params.chapterId };
 
     const regexQuery = new RegExp(/^[^:].*$/);
-    const schema = joi.object({
+    const schema: ObjectSchema = joi.object({
         bibleId: joi.string().pattern(regexQuery).required(),
         chapterId: joi.string().pattern(regexQuery).required(),
     });
