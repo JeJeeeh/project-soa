@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import axios from '../config/axiosConfig';
 import { AxiosResponse } from 'axios';
 import { StatusCode } from '../helpers/statusCode';
+import { sanitizeNullObject } from '../helpers/sanitizer';
 
 interface IBibles {
     data: IBibleData[];
@@ -52,7 +53,7 @@ interface IQueryBible {
 
 export const getBibles = async (req: Request, res: Response): Promise<void> => {
     const q: IQueryBible = req.query;
-    const filteredQ = Object.entries(q).filter(([ , value ]) => value);
+    const filteredQ = sanitizeNullObject(q);
 
     const bibleResponse: AxiosResponse<IBibles> = await axios.get('/bibles', {
         params: filteredQ,
