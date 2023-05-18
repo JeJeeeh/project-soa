@@ -2,30 +2,28 @@ import { Request, Response } from 'express';
 import axios from '../config/axiosConfig';
 import { AxiosResponse } from 'axios';
 import { StatusCode } from '../helpers/statusCode';
+import { IQueryVerse, IVerse, IVerseData, IVerses, IVersesData } from '../interfaces/verseInterfaces';
 
-interface IVerses {
-  data: IVerseData[];
-}
+const getVerses = async (req: Request, res: Response): Promise<void> => {
+  const {bibleId, chapterId} = req.params;
 
-interface IVerse {
-  data: IVerseData;
-}
+  const verseResponse: AxiosResponse<IVerses> = await axios.get(`/bibles/${ bibleId }/chapters/${ chapterId }/verses`);
+  const verses: IVersesData[] = verseResponse.data.data;
 
-interface IVerseData {
-  id: string;
-  orgId: string;
-  bibleId: string;
-  bookId: string;
-  chapterId: string;
-  reference: string;
-}
-
-const getVerses = async (req: Request, res: Response): Promise<Response> => {
-  return res.send('Hello World');
+  res.status(StatusCode.OK).json(verses);
+  return;
 };
 
-const getVerse = (req: Request, res: Response) => {
-  res.send('Hello World');
+const getVerse = async (req: Request, res: Response): Promise<void> => {
+  // const q: IQueryVerse = req.query;
+
+  const {bibleId, verseId} = req.params;
+
+  const verseResponse: AxiosResponse<IVerse> = await axios.get(`/bibles/${ bibleId }/verses/${ verseId }`);
+  const verse: IVerseData = verseResponse.data.data;
+
+  res.status(StatusCode.OK).json(verse);
+  return;
 };
 
 export { getVerses, getVerse };

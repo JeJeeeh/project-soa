@@ -1,6 +1,6 @@
 import express, { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import * as dotenv from 'dotenv';
-import sharedRoutes from './src/routes/shared';
+import authRoutes from './src/routes/auth';
 import bibleRoutes from './src/routes/bibles';
 import { BibleExceptions } from './src/exceptions/bibleExceptions';
 import { StatusCode } from './src/helpers/statusCode';
@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.set('Content-Type', 'application/json');
 app.set('x-powered-by', false);
 
-app.use(`${ basePrefix }`, sharedRoutes);
+app.use(`${ basePrefix }/auth`, authRoutes);
 app.use(`${ basePrefix }/bibles`, bibleRoutes);
 app.use(`${ basePrefix }/bibles`, chapterRoutes);
 
@@ -44,7 +44,7 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 app.all('*', (req: Request, res: Response) => {
 	res.status(404).json({
 		status: 404,
-		message: 'Are you lost?',
+		message: 'Are you lost? Read the bible instead.',
 	});
 	return;
 });
