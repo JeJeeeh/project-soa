@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import axios from '../config/axiosConfig';
 import { AxiosResponse } from 'axios';
 import { StatusCode } from '../helpers/statusCode';
+import { sanitizeNullObject } from '../helpers/sanitizer';
+import Joi, { ObjectSchema } from 'joi';
 
 interface IBibles {
     data: IBibleData[];
@@ -52,7 +54,23 @@ interface IQueryBible {
 
 export const getBibles = async (req: Request, res: Response): Promise<void> => {
     const q: IQueryBible = req.query;
-    const filteredQ = Object.entries(q).filter(([ , value ]) => value);
+
+    const schema: ObjectSchema = Joi.object({
+        language: Joi.string().max(3).optional().allow('', null),
+        abbreviation: Joi.string().max(3).optional().allow('', null),
+        name: Joi.string().max(50).optional().allow('', null),
+        ids: Joi.string().max(50).optional().allow('', null),
+    });
+
+    try {
+        await schema.validateAsync(q);
+    }
+    catch (err) {
+        res.status(StatusCode.BAD_REQUEST).json({ status: StatusCode.BAD_REQUEST, message: 'Invalid parameters' });
+        return;
+    }
+
+    const filteredQ = sanitizeNullObject(q);
 
     const bibleResponse: AxiosResponse<IBibles> = await axios.get('/bibles', {
         params: filteredQ,
