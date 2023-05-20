@@ -5,6 +5,7 @@ import bibleRoutes from './src/routes/bibles';
 import { BibleExceptions } from './src/exceptions/bibleExceptions';
 import { StatusCode } from './src/helpers/statusCode';
 import chapterRoutes from './src/routes/chapters';
+import databaseRoutes from './src/routes/database';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.set('x-powered-by', false);
 app.use(`${ basePrefix }/auth`, authRoutes);
 app.use(`${ basePrefix }/bibles`, bibleRoutes);
 app.use(`${ basePrefix }/bibles`, chapterRoutes);
+app.use(`${ basePrefix }/database`, databaseRoutes);
 
 app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
 	if (err instanceof BibleExceptions) {

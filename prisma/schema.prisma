@@ -11,14 +11,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Role {
+  id              Int      @id @default(autoincrement())
+  name            String
+  max_api_hits    Int
+  max_collection  Int
+  has_daily_bread Boolean
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  users           User[]
+}
+
 model User {
-  id          Int          @id @default(autoincrement())
-  username    String       @unique
-  name        String
-  password    String
-  collections Collection[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id            Int          @id @default(autoincrement())
+  username      String       @unique
+  email         String       @unique
+  name          String
+  password      String
+  role_id       Int
+  role          Role         @relation(fields: [role_id], references: [id])
+  refresh_token String?
+  api_hits      Int          @default(0)
+  collections   Collection[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 }
 
 model Collection {

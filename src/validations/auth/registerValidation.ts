@@ -21,12 +21,31 @@ const uniqueUsername = async (username: string) => {
   }
 };
 
+const uniqueEmail = async (email: string) => { 
+  let user;
+  try {
+    user = await prisma.user.findUnique({
+      where: {
+        email: email
+      }
+    });
+  } catch (error) {
+    throw new Error('Something went wrong when checking for email');
+  } finally {
+    await prisma.$disconnect();
+  }
+
+  if (user) {
+    throw new Error('Email already exists');
+  }
+};
+
 const registerSchema: Joi.ObjectSchema = Joi.object({
   username: Joi.string().min(3).required().external(uniqueUsername).messages({
     'string.empty': 'Username is required',
     'string.min': 'Username must be at least 3 characters long',
   }),
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email().required().external(uniqueEmail).messages({
     'string.empty': 'Email is required',
     'string.email': 'Email must be a valid email',
   }),

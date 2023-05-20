@@ -6,4 +6,4 @@ router.get('/collections', bearerToken, (req: Request, res: Response) => {
     res.send('collections');
 });
 
-module.exports = router;
+export default router;
