@@ -4,6 +4,7 @@ import authRoutes from './src/routes/auth';
 import bibleRoutes from './src/routes/bibles';
 import { BibleExceptions } from './src/exceptions/bibleExceptions';
 import { StatusCode } from './src/helpers/statusCode';
+import bookRoutes from './src/routes/books';
 import chapterRoutes from './src/routes/chapters';
 import databaseRoutes from './src/routes/database';
 
@@ -22,6 +23,7 @@ app.set('x-powered-by', false);
 
 app.use(`${ basePrefix }/auth`, authRoutes);
 app.use(`${ basePrefix }/bibles`, bibleRoutes);
+app.use(`${ basePrefix }/bibles`, bookRoutes);
 app.use(`${ basePrefix }/bibles`, chapterRoutes);
 app.use(`${ basePrefix }/database`, databaseRoutes);
 

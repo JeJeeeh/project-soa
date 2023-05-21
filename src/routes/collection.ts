@@ -1,8 +1,8 @@
 import { Router, Response, Request } from 'express';
 const router: Router = Router();
-import { bearerToken } from '../middlewares/middewares';
+import middlewares from '../middlewares';
 
-router.get('/collections', bearerToken, (req: Request, res: Response) => {
+router.get('/collections', middlewares.hasBearerToken, (req: Request, res: Response) => {
     res.send('collections');
 });
 
