@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Request, Response } from 'express';
 import schema from '../validations/auth';
 import { PrismaClient, User } from '@prisma/client';
@@ -5,6 +6,8 @@ const prisma = new PrismaClient();
 import bcrypt from 'bcrypt';
 import { StatusCode } from '../helpers/statusCode';
 import jwt from 'jsonwebtoken';
+import { ValidationError } from 'joi';
+import { JoiExceptions } from '../exceptions/joiException';
 
 interface IRegister {
   username: string;
@@ -20,55 +23,61 @@ interface ILogin {
   password: string;
 }
 
+interface IUserData {
+  username: string;
+  email: string;
+  name: string;
+  password: string;
+  role_id: number;
+  refresh_token: string;
+  api_hits: number;
+}
+
 const login = async (req: Request, res: Response): Promise<void> => {
-  const credentials: ILogin = req.body;
+  const credentials: ILogin = req.body as ILogin;
 
   try {
     await schema.loginSchema.validateAsync(credentials, { abortEarly: false });
-  } catch (error: any) {
-    res.status(StatusCode.BAD_REQUEST).send({
-      error: error.message
-    });
-    return; 
+  } catch (error) {
+    const err = error as ValidationError;
+    throw new JoiExceptions(err);
+    return;
   }
 
   const user = await checkCredentials(credentials);
 
-  if (!user){
+  if (!user) {
     res.status(StatusCode.NOT_FOUND).send({
-      error: 'Invalid credentials'
+      error: 'Invalid credentials',
     });
     return;
   }
 
-  const accessToken = await generateAccessToken(user.username);
+  const accessToken = generateAccessToken(user.username);
   const refreshToken = await generateRefreshToken(user.username);
-  if (!refreshToken){
-    res.status(StatusCode.INTERNAL_SERVER).send({
-      error: 'Something went wrong'
-    });
-    return; 
+  if (!refreshToken) {
+    throw new Error('Something went wrong');
+    return;
   }
 
   res.status(StatusCode.OK).json({
     message: 'Login successful',
     access_token: accessToken,
-  })
+  });
   return;
 };
 
 const register = async (req: Request, res: Response): Promise<Response> => {
-  const user: IRegister = req.body;
-  
+  const user: IRegister = req.body as IRegister;
+
   try {
     await schema.registerSchema.validateAsync(user, { abortEarly: false });
-  } catch (error: any) {
-    return res.status(400).send({
-      error: error.message
-    });
+  } catch (error) {
+    const err = error as ValidationError;
+    throw new JoiExceptions(err);
   }
 
-  const userData = {
+  const userData: IUserData = {
     username: user.username,
     email: user.email,
     name: user.name,
@@ -79,23 +88,23 @@ const register = async (req: Request, res: Response): Promise<Response> => {
   };
 
   const result = await createUser(userData);
-  
-  if (result){
+
+  if (result) {
     return res.status(StatusCode.CREATED).send({
       message: 'User created successfully',
     });
   }
   else {
-    return res.status(500).send('Something went wrong');
+    throw new Error('Something went wrong');
   }
 };
 
 export { login, register };
 
-async function checkCredentials(data: any): Promise<User | null>{
-  const password = data.password;
-  const username = data.username? data.username : '';
-  const email = data.email? data.email : '';
+async function checkCredentials(data: ILogin): Promise<User | null> {
+  const password: string = data.password;
+  const username: string = data.username ? data.username : '';
+  const email: string = data.email ? data.email : '';
 
   let user;
   try {
@@ -103,40 +112,40 @@ async function checkCredentials(data: any): Promise<User | null>{
       where: {
         OR: [
           {
-            username: username
+            username: username,
           },
           {
-            email: email
-          }
-        ]
-      }
+            email: email,
+          },
+        ],
+      },
     });
   } catch (error) {
     console.log(error);
-    
+
   } finally {
     await prisma.$disconnect();
   }
 
-  if (!user || await checkPassword(password, user[0].password) === false) {
+  if (!user || await checkPassword(password, user[ 0 ].password) === false) {
     return null;
   }
 
-  return user[0];
+  return user[ 0 ];
 }
 
-async function createUser(data: any): Promise<User | null>{
+async function createUser(data: IUserData): Promise<User | null> {
   const password = data.password;
   const hashedPassword = await hashPassword(password);
   data.password = hashedPassword;
 
-  try{
+  try {
     const result = await prisma.user.create({
-      data
+      data,
     });
 
     return result;
-  }catch(error){
+  } catch (error) {
     console.log(error);
     return null;
   } finally {
@@ -154,25 +163,25 @@ async function checkPassword(inputPassword: string, userPassword: string): Promi
   return await bcrypt.compare(inputPassword, userPassword);
 }
 
-async function generateAccessToken(username: string): Promise<string>{
+function generateAccessToken(username: string): string {
   const accessToken = jwt.sign({ username: username }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: process.env.ACCESS_TOKEN_TTL });
   return accessToken;
 }
 
-async function generateRefreshToken(username: string): Promise<string | null>{
-  
+async function generateRefreshToken(username: string): Promise<string | null> {
+
   const refreshToken = jwt.sign({ username: username }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: process.env.REFRESH_TOKEN_TTL });
-  try{
+  try {
     await prisma.user.update({
       where: {
-        username: username
+        username: username,
       },
       data: {
-        refresh_token: refreshToken
-      }
+        refresh_token: refreshToken,
+      },
     });
     return refreshToken;
-  }catch(error){
+  } catch (error) {
     console.log(error);
     return null;
   } finally {

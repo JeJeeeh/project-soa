@@ -37,14 +37,14 @@ interface IVerseData {
 }
 
 interface IQueryVerse {
-  "content-type"?: ContentType;
-  "include-notes"?: boolean;
-  "include-titles"?: boolean;
-  "include-chapter-numbers"?: boolean;
-  "include-verse-numbers"?: boolean;
-  "include-verse-spans"?: boolean;
-  "parallels"?: string;
-  "use-org-id"?: boolean;
+  'content-type'?: ContentType;
+  'include-notes'?: boolean;
+  'include-titles'?: boolean;
+  'include-chapter-numbers'?: boolean;
+  'include-verse-numbers'?: boolean;
+  'include-verse-spans'?: boolean;
+  'parallels'?: string;
+  'use-org-id'?: boolean;
 }
 
 export { IVerses, IVerse, IVersesData, IVerseData, IQueryVerse };

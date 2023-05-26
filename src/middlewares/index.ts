@@ -1,9 +1,9 @@
-import hasBearerToken from "./hasBearerToken";
-import injectApiKey from "./injectApiKey";
+import hasBearerToken from './hasBearerToken';
+import injectApiKey from './injectApiKey';
 
 const middlewares = {
     hasBearerToken,
-    injectApiKey
-}
+    injectApiKey,
+};
 
 export default middlewares;

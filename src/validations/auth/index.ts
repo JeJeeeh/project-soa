@@ -4,7 +4,7 @@ import IAuthSchema from '../../interfaces/validationInterfaces/authInterfaces';
 
 const schema: IAuthSchema = {
   registerSchema,
-  loginSchema
+  loginSchema,
 };
 
 export default schema;

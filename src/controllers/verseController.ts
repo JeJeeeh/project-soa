@@ -2,10 +2,10 @@ import { Request, Response } from 'express';
 import axios from '../config/axiosConfig';
 import { AxiosResponse } from 'axios';
 import { StatusCode } from '../helpers/statusCode';
-import { IQueryVerse, IVerse, IVerseData, IVerses, IVersesData } from '../interfaces/verseInterfaces';
+import { IVerse, IVerseData, IVerses, IVersesData } from '../interfaces/verseInterfaces';
 
 const getVerses = async (req: Request, res: Response): Promise<void> => {
-  const {bibleId, chapterId} = req.params;
+  const { bibleId, chapterId } = req.params;
 
   const verseResponse: AxiosResponse<IVerses> = await axios.get(`/bibles/${ bibleId }/chapters/${ chapterId }/verses`);
   const verses: IVersesData[] = verseResponse.data.data;
@@ -17,7 +17,7 @@ const getVerses = async (req: Request, res: Response): Promise<void> => {
 const getVerse = async (req: Request, res: Response): Promise<void> => {
   // const q: IQueryVerse = req.query;
 
-  const {bibleId, verseId} = req.params;
+  const { bibleId, verseId } = req.params;
 
   const verseResponse: AxiosResponse<IVerse> = await axios.get(`/bibles/${ bibleId }/verses/${ verseId }`);
   const verse: IVerseData = verseResponse.data.data;

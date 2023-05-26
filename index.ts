@@ -7,6 +7,8 @@ import { StatusCode } from './src/helpers/statusCode';
 import bookRoutes from './src/routes/books';
 import chapterRoutes from './src/routes/chapters';
 import databaseRoutes from './src/routes/database';
+import { BadRequestExceptions, ForbiddenExceptions, NotFoundExceptions, UnauthorizedExceptions } from './src/exceptions/clientException';
+import { JoiExceptions } from './src/exceptions/joiException';
 
 dotenv.config();
 
@@ -31,6 +33,41 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 	if (err instanceof BibleExceptions) {
 		res.status(err.statusCode).json({
 			status: err.statusCode,
+			message: err.message,
+		});
+		return;
+	}
+	if (err instanceof JoiExceptions) {
+		res.status(StatusCode.BAD_REQUEST).json({
+			status: StatusCode.BAD_REQUEST,
+			message: err.getDetailError(),
+		});
+		return;
+	}
+	if (err instanceof BadRequestExceptions) {
+		res.status(StatusCode.BAD_REQUEST).json({
+			status: StatusCode.BAD_REQUEST,
+			message: err.message,
+		});
+		return;
+	}
+	if (err instanceof NotFoundExceptions) {
+		res.status(StatusCode.NOT_FOUND).json({
+			status: StatusCode.NOT_FOUND,
+			message: err.message,
+		});
+		return;
+	}
+	if (err instanceof ForbiddenExceptions) {
+		res.status(StatusCode.FORBIDDEN).json({
+			status: StatusCode.FORBIDDEN,
+			message: err.message,
+		});
+		return;
+	}
+	if (err instanceof UnauthorizedExceptions) {
+		res.status(StatusCode.UNAUTHORIZED).json({
+			status: StatusCode.UNAUTHORIZED,
 			message: err.message,
 		});
 		return;
