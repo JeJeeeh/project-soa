@@ -53,7 +53,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  const accessToken = generateAccessToken(user.username);
+  const accessToken = generateAccessToken(user.id);
   const refreshToken = await generateRefreshToken(user.username);
   if (!refreshToken) {
     throw new Error('Something went wrong');
@@ -163,8 +163,8 @@ async function checkPassword(inputPassword: string, userPassword: string): Promi
   return await bcrypt.compare(inputPassword, userPassword);
 }
 
-function generateAccessToken(username: string): string {
-  const accessToken = jwt.sign({ username: username }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: process.env.ACCESS_TOKEN_TTL });
+function generateAccessToken(id: number): string {
+  const accessToken = jwt.sign({ id: id }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: process.env.ACCESS_TOKEN_TTL });
   return accessToken;
 }
 

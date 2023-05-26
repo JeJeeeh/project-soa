@@ -1,14 +1,15 @@
+import Joi from 'joi';
 import { ContentType } from '../helpers/contentType';
 
-interface IVerses {
+export interface IVerses {
   data: IVersesData[];
 }
 
-interface IVerse {
+export interface IVerse {
   data: IVerseData;
 }
 
-interface IVersesData {
+export interface IVersesData {
   id: string;
   orgId: string;
   bibleId: string;
@@ -17,7 +18,7 @@ interface IVersesData {
   reference: string;
 }
 
-interface IVerseData {
+export interface IVerseData {
   id: string;
   bibleId: string;
   bookId: string;
@@ -36,7 +37,7 @@ interface IVerseData {
   },
 }
 
-interface IQueryVerse {
+export interface IQueryVerse {
   'content-type'?: ContentType;
   'include-notes'?: boolean;
   'include-titles'?: boolean;
@@ -47,4 +48,7 @@ interface IQueryVerse {
   'use-org-id'?: boolean;
 }
 
-export { IVerses, IVerse, IVersesData, IVerseData, IQueryVerse };
+export interface IGetVerse {
+  verseParamsSchema: Joi.ObjectSchema,
+  verseQueryScehma: Joi.ObjectSchema,
+}

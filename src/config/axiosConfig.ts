@@ -1,8 +1,5 @@
 import { AxiosError, AxiosInstance, default as ax } from 'axios';
-import * as dotenv from 'dotenv';
 import { BibleExceptions } from '../exceptions/bibleExceptions';
-
-dotenv.config();
 
 const API_KEY: string = process.env.API_KEY || '';
 
