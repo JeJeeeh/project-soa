@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { StatusCode } from '../helpers/statusCode';
 import { UnauthorizedExceptions } from '../exceptions/clientException';
 
 const hasBearerToken = (req: Request, res: Response, next: NextFunction): Response | void => {

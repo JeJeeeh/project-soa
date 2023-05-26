@@ -15,6 +15,15 @@ export interface IBookData {
   chapters: IBooksChapter[]
 }
 
+export interface IQueryBooks {
+  "include-chapters"?: boolean;
+  "include-chapters-and-sections"?: boolean;
+}
+
+export interface IQueryBook {
+  "include-chapters"?: boolean;
+}
+
 interface IBooksChapter {
   id: string;
   bibleId: string;
