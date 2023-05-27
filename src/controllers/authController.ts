@@ -8,7 +8,8 @@ import { StatusCode } from '../helpers/statusCode';
 import jwt from 'jsonwebtoken';
 import { ValidationError } from 'joi';
 import { JoiExceptions } from '../exceptions/joiException';
-import { NotFoundExceptions } from '../exceptions/clientException';
+import { ForbiddenExceptions, NotFoundExceptions, UnauthorizedExceptions } from '../exceptions/clientException';
+import { IJwtPayload } from '../interfaces/jwtInterface';
 
 interface IRegister {
     username: string;
@@ -32,6 +33,10 @@ interface IUserData {
     role_id: number;
     refresh_token: string;
     api_hits: number;
+}
+
+interface ICookies {
+    refresh_token: string;
 }
 
 const login = async (req: Request, res: Response): Promise<void> => {
@@ -105,7 +110,67 @@ const register = async (req: Request, res: Response): Promise<Response> => {
     }
 };
 
-export { login, register };
+const refreshToken = async (req: Request, res: Response): Promise<Response> => {
+    const cookies = req.cookies as ICookies;
+    const token = cookies.refresh_token;
+
+    if (!token) {
+        throw new UnauthorizedExceptions('Unauthorized');
+    }
+
+    let user: User | null = null;
+    try {
+        user = await getUserByRefreshToken(token);
+    } catch (error) {
+        throw new ForbiddenExceptions('Forbidden');
+    }
+
+    if (!user) {
+        throw new ForbiddenExceptions('Forbidden');
+    }
+
+    try {
+        const jwtResult = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET as string);
+        const payload = jwtResult as IJwtPayload;
+
+        return res.status(StatusCode.OK).json({
+            message: 'Token refreshed successfully',
+            access_token: generateAccessToken(payload.id),
+        });
+    } catch (error) {
+        throw new ForbiddenExceptions('Forbidden');
+    }
+
+};
+
+const logout = async (req: Request, res: Response): Promise<Response> => {
+    const cookies = req.cookies as ICookies;
+    const token = cookies.refresh_token;
+
+    if (!token) {
+        return res.status(StatusCode.NO_CONTENT).json({
+            status: StatusCode.NO_CONTENT,
+            message: 'No refresh token found',
+        });
+    }
+
+    const user = await getUserByRefreshToken(token);
+
+    if (user) {
+        await removeRefreshToken(token);
+    }
+
+    return res.clearCookie('refresh_token', {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+    }).status(StatusCode.NO_CONTENT).json({
+        status: StatusCode.NO_CONTENT,
+        message: 'No refresh token found',
+    });
+};
+
+export { login, register, refreshToken, logout };
 
 async function checkCredentials(data: ILogin): Promise<User | null> {
     const password: string = data.password;
@@ -197,3 +262,44 @@ async function generateRefreshToken(username: string): Promise<string | null> {
         await prisma.$disconnect();
     }
 }
+
+interface UserWhereUniqueInput {
+    id?: number;
+    username?: string;
+    refresh_token?: string;
+}
+
+const removeRefreshToken = async (refreshToken: string): Promise<void> => {
+    const user: UserWhereUniqueInput = {
+        refresh_token: refreshToken,
+    };
+    try {
+        await prisma.user.update({
+            where: user,
+            data: {
+                refresh_token: null,
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    } finally {
+        await prisma.$disconnect();
+    }
+};
+
+const getUserByRefreshToken = async (refreshToken: string): Promise<User | null> => {
+    const user: UserWhereUniqueInput = {
+        refresh_token: refreshToken,
+    };
+    try {
+        const resultUser = await prisma.user.findFirst({
+            where: user,
+        });
+        return resultUser;
+    } catch (error) {
+        console.log(error);
+    } finally {
+        await prisma.$disconnect();
+    }
+    return null;
+};
