@@ -6,4 +6,5 @@ export enum StatusCode {
     INTERNAL_SERVER = 500,
     UNAUTHORIZED = 401,
     FORBIDDEN = 403,
+    NO_CONTENT = 204,
 }
