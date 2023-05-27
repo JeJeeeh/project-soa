@@ -1,9 +1,11 @@
-import hasBearerToken from './hasBearerToken';
+import hasValidBearerToken from './hasValidBearerToken';
+import hasValidRefreshToken from './hasValidRefreshToken';
 import injectApiKey from './injectApiKey';
 
 const middlewares = {
-    hasBearerToken,
+    hasValidBearerToken,
     injectApiKey,
+    hasValidRefreshToken,
 };
 
 export default middlewares;

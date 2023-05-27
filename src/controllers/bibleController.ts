@@ -4,6 +4,7 @@ import { AxiosResponse } from 'axios';
 import { StatusCode } from '../helpers/statusCode';
 import { sanitizeNullObject } from '../helpers/sanitizer';
 import Joi, { ObjectSchema } from 'joi';
+import { BadRequestExceptions } from '../exceptions/clientException';
 
 interface IBibles {
     data: IBibleData[];
@@ -66,8 +67,7 @@ export const getBibles = async (req: Request, res: Response): Promise<void> => {
         await schema.validateAsync(q);
     }
     catch (err) {
-        res.status(StatusCode.BAD_REQUEST).json({ status: StatusCode.BAD_REQUEST, message: 'Invalid parameters' });
-        return;
+        throw new BadRequestExceptions('Invalid parameters');
     }
 
     const filteredQ = sanitizeNullObject(q);
