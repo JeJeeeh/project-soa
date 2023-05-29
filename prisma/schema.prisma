@@ -50,8 +50,12 @@ model Collection {
 
 model Subcollection {
   id           Int        @id @default(autoincrement())
-  name         String
-  description  String
+  title        String
+  bibleId      String
+  bookId       String
+  chapterId    String
+  verseId      String
+  content      String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   collectionId Int
