@@ -292,10 +292,10 @@ const getUserByRefreshToken = async (refreshToken: string): Promise<User | null>
         refresh_token: refreshToken,
     };
     try {
-        const resultUser = await prisma.user.findFirst({
+        const resultUser = await prisma.user.findMany({
             where: user,
         });
-        return resultUser;
+        return resultUser[ 0 ];
     } catch (error) {
         console.log(error);
     } finally {

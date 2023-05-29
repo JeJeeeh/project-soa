@@ -22,3 +22,9 @@ export class UnauthorizedExceptions extends Error {
         this.name = 'UnauthorizedExceptions';
     }
 }
+export class TooManyRequestsExceptions extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'TooManyRequestsExceptions';
+    }
+}

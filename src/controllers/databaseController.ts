@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { PrismaClient, Role, DailyBread } from "@prisma/client";
-import { StatusCode } from "../helpers/statusCode";
+import { Request, Response } from 'express';
+import { PrismaClient, Role, DailyBread } from '@prisma/client';
+import { StatusCode } from '../helpers/statusCode';
 const prisma = new PrismaClient();
 
 interface ISeed {
@@ -25,7 +25,7 @@ export const seed = (req: Request, res: Response): void => {
 
 	res.status(StatusCode.OK).json({
 		status: StatusCode.OK,
-		message: "Seeded successfully",
+		message: 'Seeded successfully',
 		data: data,
 	});
 	return;
@@ -41,7 +41,7 @@ export const seedDailyBread = (req: Request, res: Response): void => {
 
 	res.status(StatusCode.OK).json({
 		status: StatusCode.OK,
-		message: "Seeded successfully",
+		message: 'Seeded successfully',
 		data: data,
 	});
 };

@@ -5,16 +5,17 @@ import { StatusCode } from '../helpers/statusCode';
 import { IBodyCollection, IDataCollection, IUpdateCollection } from '../interfaces/collectionInterfaces';
 import Joi, { ObjectSchema, ValidationError } from 'joi';
 import { JoiExceptions } from '../exceptions/joiException';
-import { BadRequestExceptions, NotFoundExceptions } from '../exceptions/clientException';
+import { BadRequestExceptions, NotFoundExceptions, TooManyRequestsExceptions } from '../exceptions/clientException';
+import { IJwtPayload } from '../interfaces/jwtInterface';
 
 async function getUser(id: number): Promise<User | null> {
-	const user = await prisma.user.findUnique({
-		where: {
-			id,
-		},
-	});
+    const user = await prisma.user.findUnique({
+        where: {
+            id,
+        },
+    });
 
-	return user;
+    return user;
 }
 
 async function countCollection(id: number): Promise<number> {
@@ -80,41 +81,36 @@ async function doDeleteCollection(id: number) {
 }
 
 export const addCollection = async (
-	req: Request,
-	res: Response,
+    req: Request,
+    res: Response,
 ): Promise<void> => {
-	const body: IBodyCollection = {
-		name: req.body.name,
-		description: req.body.description,
-	};
+    const body = req.body as IBodyCollection;
 
-	const schema: ObjectSchema = Joi.object({
+    const schema: ObjectSchema = Joi.object({
         name: Joi.string().required(),
         description: Joi.string().optional().allow('', null),
-	});
+    });
 
-	try {
-		await schema.validateAsync(body);
-	} catch (err) {
-		const error = err as ValidationError;
-		throw new JoiExceptions(error);
-	}
+    try {
+        await schema.validateAsync(body);
+    } catch (err) {
+        const error = err as ValidationError;
+        throw new JoiExceptions(error);
+    }
 
-    const checkUser = await getUser(res.locals.user.id);
+    const checkUser = await getUser((res.locals.user as IJwtPayload).id);
     if (!checkUser) {
         throw new NotFoundExceptions('User not found');
     }
-    
+
     const collectionCount = await countCollection(checkUser.id);
     if (checkUser.role_id === 1) {
         if (collectionCount > 0) {
-            //TODO: change Make Exception
-            throw new Error('You have reached the maximum collection limit');
+            throw new TooManyRequestsExceptions('You have reached the maximum collection limit');
         }
     } else if (checkUser.role_id === 2) {
         if (collectionCount > 10) {
-            //TODO: change Make Exception
-            throw new Error('You have reached the maximum collection limit');
+            throw new TooManyRequestsExceptions('You have reached the maximum collection limit');
         }
     }
 
@@ -144,24 +140,24 @@ export const getSingleCollection = async (
 ): Promise<void> => {
     const id = Number(req.params.id);
 
-	const schema: ObjectSchema = Joi.object({
+    const schema: ObjectSchema = Joi.object({
         id: Joi.number().required(),
     });
-    
+
     try {
-		await schema.validateAsync( { id } );
-	} catch (err) {
-		const error = err as ValidationError;
-		throw new JoiExceptions(error);
+        await schema.validateAsync({ id });
+    } catch (err) {
+        const error = err as ValidationError;
+        throw new JoiExceptions(error);
     }
-    
+
     const collection = await findSingleCollection(id);
 
     if (!collection) {
         throw new NotFoundExceptions('Collection not found');
     }
 
-    if (collection.userId !== res.locals.user.id) {
+    if (collection.userId !== (res.locals.user as IJwtPayload).id) {
         throw new BadRequestExceptions('Collection is not yours!!');
     }
 
@@ -174,8 +170,8 @@ export const getSingleCollection = async (
 export const getAllCollection = async (
     req: Request,
     res: Response,
-): Promise<void> => {    
-    const collections = await getCollections(res.locals.user.id);
+): Promise<void> => {
+    const collections = await getCollections((res.locals.user as IJwtPayload).id);
 
     if (!collections) {
         throw new NotFoundExceptions('Collection not found');
@@ -192,26 +188,23 @@ export const editCollection = async (
     res: Response,
 ): Promise<void> => {
     const id = Number(req.params.id);
-    const body: IBodyCollection = {
-        name: req.body.name,
-        description: req.body.description,
-    };
+    const body = req.body as IBodyCollection;
 
     const regexQuery = new RegExp(/^[^:].*$/);
-	const schema: ObjectSchema = Joi.object({
+    const schema: ObjectSchema = Joi.object({
         name: Joi.string().pattern(regexQuery).required(),
         description: Joi.string().optional().allow('', null),
         id: Joi.number().required(),
-	});
+    });
 
-	try {
+    try {
         await schema.validateAsync({
             ...body,
             id,
         });
-	} catch (err) {
-		const error = err as ValidationError;
-		throw new JoiExceptions(error);
+    } catch (err) {
+        const error = err as ValidationError;
+        throw new JoiExceptions(error);
     }
 
     const collection = await findSingleCollection(id);
@@ -220,16 +213,16 @@ export const editCollection = async (
         throw new NotFoundExceptions('Collection not found');
     }
 
-    if (collection.userId !== res.locals.user.id) {
+    if (collection.userId !== (res.locals.user as IJwtPayload).id) {
         throw new BadRequestExceptions('Collection is not yours!!');
     }
 
-    const c : IUpdateCollection = {
+    const c: IUpdateCollection = {
         id: collection.id,
         name: body.name,
         description: body.description,
     };
-    
+
     const result = await updateCollection(c);
 
     res.status(StatusCode.OK).json({
@@ -247,21 +240,21 @@ export const deleteCollection = async (
     const schema: ObjectSchema = Joi.object({
         id: Joi.number().required(),
     });
-    
+
     try {
         await schema.validateAsync({ id });
     } catch (err) {
         const error = err as ValidationError;
         throw new JoiExceptions(error);
     }
-    
+
     const collection = await findSingleCollection(id);
 
     if (!collection) {
         throw new NotFoundExceptions('Collection not found');
     }
 
-    if (collection.userId !== res.locals.user.id) {
+    if (collection.userId !== (res.locals.user as IJwtPayload).id) {
         throw new BadRequestExceptions('Collection is not yours!!');
     }
 
@@ -270,7 +263,7 @@ export const deleteCollection = async (
         res.status(StatusCode.OK).json({
             message: 'Success delete collection',
         });
-    }catch (err) {
+    } catch (err) {
         throw new Error('Failed delete collection');
     }
 };

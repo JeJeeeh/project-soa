@@ -9,7 +9,8 @@ import verseRoutes from './src/routes/verses';
 import chapterRoutes from './src/routes/chapters';
 import databaseRoutes from './src/routes/database';
 import collectionRoutes from './src/routes/collection';
-import { BadRequestExceptions, ForbiddenExceptions, NotFoundExceptions, UnauthorizedExceptions } from './src/exceptions/clientException';
+import itemRoutes from './src/routes/item';
+import { BadRequestExceptions, ForbiddenExceptions, NotFoundExceptions, TooManyRequestsExceptions, UnauthorizedExceptions } from './src/exceptions/clientException';
 import { JoiExceptions } from './src/exceptions/joiException';
 import cookieParser from 'cookie-parser';
 
@@ -33,6 +34,7 @@ app.use(`${ basePrefix }/bibles`, bookRoutes);
 app.use(`${ basePrefix }/bibles`, verseRoutes);
 app.use(`${ basePrefix }/bibles`, chapterRoutes);
 app.use(`${ basePrefix }/collections`, collectionRoutes);
+app.use(`${ basePrefix }/collections`, itemRoutes);
 app.use(`${ basePrefix }/database`, databaseRoutes);
 
 app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
@@ -74,6 +76,13 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 	if (err instanceof UnauthorizedExceptions) {
 		res.status(StatusCode.UNAUTHORIZED).json({
 			status: StatusCode.UNAUTHORIZED,
+			message: err.message,
+		});
+		return;
+	}
+	if (err instanceof TooManyRequestsExceptions) {
+		res.status(StatusCode.TOO_MANY_REQUESTS).json({
+			status: StatusCode.TOO_MANY_REQUESTS,
 			message: err.message,
 		});
 		return;

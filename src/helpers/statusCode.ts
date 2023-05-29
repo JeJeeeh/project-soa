@@ -7,4 +7,5 @@ export enum StatusCode {
     UNAUTHORIZED = 401,
     FORBIDDEN = 403,
     NO_CONTENT = 204,
+    TOO_MANY_REQUESTS = 429,
 }
