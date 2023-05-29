@@ -30,7 +30,7 @@ model User {
   password      String
   role_id       Int
   role          Role         @relation(fields: [role_id], references: [id])
-  refresh_token String?      @unique
+  refresh_token String?
   api_hits      Int          @default(0)
   collections   Collection[]
   createdAt     DateTime     @default(now())
