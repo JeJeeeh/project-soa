@@ -11,6 +11,7 @@ import databaseRoutes from './src/routes/database';
 import collectionRoutes from './src/routes/collection';
 import itemRoutes from './src/routes/item';
 import { BadRequestExceptions, ForbiddenExceptions, NotFoundExceptions, TooManyRequestsExceptions, UnauthorizedExceptions } from './src/exceptions/clientException';
+import dailybreadRoutes from './src/routes/dailybread';
 import { JoiExceptions } from './src/exceptions/joiException';
 import cookieParser from 'cookie-parser';
 
@@ -28,6 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.set('Content-Type', 'application/json');
 app.set('x-powered-by', false);
 
+app.use(`${ basePrefix }/`, dailybreadRoutes);
 app.use(`${ basePrefix }/auth`, authRoutes);
 app.use(`${ basePrefix }/bibles`, bibleRoutes);
 app.use(`${ basePrefix }/bibles`, bookRoutes);
@@ -38,6 +40,8 @@ app.use(`${ basePrefix }/collections`, itemRoutes);
 app.use(`${ basePrefix }/database`, databaseRoutes);
 
 app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
+	console.log(err);
+	
 	if (err instanceof BibleExceptions) {
 		res.status(err.statusCode).json({
 			status: err.statusCode,

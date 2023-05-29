@@ -55,7 +55,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
         throw new NotFoundExceptions('Invalid credentials');
     }
 
-    const accessToken = generateAccessToken(user.id);
+    const accessToken = generateAccessToken(user.id, user.role_id);
     const refreshToken = await generateRefreshToken(user.username);
     if (!refreshToken) {
         throw new Error('Something went wrong');
@@ -95,7 +95,7 @@ const register = async (req: Request, res: Response): Promise<Response> => {
         password: user.password,
         role_id: 1,
         refresh_token: '',
-        api_hits: 0,
+        api_hits: 10,
     };
 
     const result = await createUser(userData);
@@ -135,7 +135,7 @@ const refreshToken = async (req: Request, res: Response): Promise<Response> => {
 
         return res.status(StatusCode.OK).json({
             message: 'Token refreshed successfully',
-            access_token: generateAccessToken(payload.id),
+            access_token: generateAccessToken(payload.id, payload.role_id),
         });
     } catch (error) {
         throw new ForbiddenExceptions('Forbidden');
@@ -183,7 +183,7 @@ async function checkCredentials(data: ILogin): Promise<User | null> {
             where: {
                 OR: [
                     {
-                        username: username,
+                    username: username,
                     },
                     {
                         email: email,
@@ -238,8 +238,8 @@ async function checkPassword(inputPassword: string, userPassword: string): Promi
     return await bcrypt.compare(inputPassword, userPassword);
 }
 
-function generateAccessToken(id: number): string {
-    const accessToken = jwt.sign({ id: id }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: process.env.ACCESS_TOKEN_TTL });
+function generateAccessToken(id: number, role_id: number): string {
+    const accessToken = jwt.sign({ id: id, role_id: role_id }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: process.env.ACCESS_TOKEN_TTL });
     return accessToken;
 }
 
