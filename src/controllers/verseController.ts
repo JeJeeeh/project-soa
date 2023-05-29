@@ -3,7 +3,7 @@ import axios from '../config/axiosConfig';
 import { AxiosResponse } from 'axios';
 import { StatusCode } from '../helpers/statusCode';
 import { IQueryVerse, IVerse, IVerseData, IVerses, IVersesData } from '../interfaces/verseInterfaces';
-import schema from '../validations/verses'
+import schema from '../validations/verses';
 import { sanitizeNullObject } from '../helpers/sanitizer';
 import { ValidationError } from 'joi';
 import { JoiExceptions } from '../exceptions/joiException';
@@ -35,7 +35,7 @@ const getVerse = async (req: Request, res: Response): Promise<void> => {
   const filteredQ = sanitizeNullObject(q);
 
   const verseResponse: AxiosResponse<IVerse> = await axios.get(`/bibles/${ bibleId }/verses/${ verseId }`, {
-    params: filteredQ
+    params: filteredQ,
   });
   const verse: IVerseData = verseResponse.data.data;
 
