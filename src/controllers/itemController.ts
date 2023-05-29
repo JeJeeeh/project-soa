@@ -4,7 +4,7 @@ import { IJwtPayload } from '../interfaces/jwtInterface';
 import { Subcollection, PrismaClient } from '@prisma/client';
 import { StatusCode } from '../helpers/statusCode';
 import Joi, { ObjectSchema } from 'joi';
-import { BadRequestExceptions, ForbiddenExceptions } from '../exceptions/clientException';
+import { BadRequestExceptions, ForbiddenExceptions, NotFoundExceptions } from '../exceptions/clientException';
 import { AxiosResponse } from 'axios';
 import { IVerse, IVerseData } from '../interfaces/verseInterfaces';
 import axios from '../config/axiosConfig';
@@ -125,6 +125,50 @@ export const addItem = async (req: Request, res: Response): Promise<void> => {
         data: item,
     });
     return;
+};
+
+export const getSingleItem = async (req: Request, res: Response): Promise<void> => {
+    const params = req.params as IItemsParams;
+    const user = res.locals.user as IJwtPayload;
+
+    const regexQuery = new RegExp(/^[^:].*$/);
+    const schema: ObjectSchema = Joi.object({
+        collectionId: Joi.string().pattern(regexQuery).required(),
+        itemId: Joi.string().pattern(regexQuery).required(),
+    });
+
+    try {
+        await schema.validateAsync(params);
+    }
+    catch (err) {
+        throw new BadRequestExceptions('Invalid params');
+    }
+
+    const isOwner = await collectionIdOwner(Number(params.collectionId), user.id);
+
+    if (!isOwner) {
+        throw new ForbiddenExceptions('You are not the owner of this collection');
+    }
+
+    const item = await prisma.subcollection.findUnique({
+        where: {
+            id: Number(params.itemId),
+        },
+    }) as IItem;
+
+    if (!item) {
+        throw new NotFoundExceptions('Item not found!');
+    }
+
+    delete item.collectionId;
+    delete item.createdAt;
+    delete item.updatedAt;
+
+    res.status(StatusCode.OK).json({
+        message: 'Success get item',
+        data: item,
+    });
+
 };
 
 export const deleteItem = async (req: Request, res: Response): Promise<void> => {
