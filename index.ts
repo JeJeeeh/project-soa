@@ -8,8 +8,10 @@ import bookRoutes from './src/routes/books';
 import verseRoutes from './src/routes/verses';
 import chapterRoutes from './src/routes/chapters';
 import databaseRoutes from './src/routes/database';
+import collectionRoutes from './src/routes/collection';
 import { BadRequestExceptions, ForbiddenExceptions, NotFoundExceptions, UnauthorizedExceptions } from './src/exceptions/clientException';
 import { JoiExceptions } from './src/exceptions/joiException';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -18,6 +20,7 @@ const port: string = process.env.PORT as string;
 
 const basePrefix = '/api/v1';
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -29,6 +32,7 @@ app.use(`${ basePrefix }/bibles`, bibleRoutes);
 app.use(`${ basePrefix }/bibles`, bookRoutes);
 app.use(`${ basePrefix }/bibles`, verseRoutes);
 app.use(`${ basePrefix }/bibles`, chapterRoutes);
+app.use(`${ basePrefix }/collections`, collectionRoutes);
 app.use(`${ basePrefix }/database`, databaseRoutes);
 
 app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
@@ -85,8 +89,8 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 });
 
 app.all('*', (req: Request, res: Response) => {
-	res.status(404).json({
-		status: 404,
+	res.status(StatusCode.NOT_FOUND).json({
+		status: StatusCode.NOT_FOUND,
 		message: 'Are you lost? Read the bible instead.',
 	});
 	return;

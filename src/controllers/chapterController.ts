@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
-import joi, { ObjectSchema } from 'joi';
+import joi, { ObjectSchema, ValidationError } from 'joi';
 import { StatusCode } from '../helpers/statusCode';
 import axios from '../config/axiosConfig';
 import { AxiosResponse } from 'axios';
 import { ContentType } from '../helpers/contentType';
 import { sanitizeNullObject } from '../helpers/sanitizer';
+import { JoiExceptions } from '../exceptions/joiException';
 interface IQueryChapters {
     bibleId: string;
     bookId: string;
@@ -76,8 +77,8 @@ export const getChapters = async (req: Request, res: Response): Promise<void> =>
         await schema.validateAsync(q);
     }
     catch (err) {
-        res.status(StatusCode.BAD_REQUEST).json({ status: StatusCode.BAD_REQUEST, message: 'Invalid parameters' });
-        return;
+        const error = err as ValidationError;
+        throw new JoiExceptions(error);
     }
 
     const chaptersResponse: AxiosResponse<IChapters> = await axios.get(`/bibles/${ q.bibleId }/books/${ q.bookId }/chapters`);
@@ -100,8 +101,8 @@ export const getChapter = async (req: Request, res: Response): Promise<void> => 
         await schema.validateAsync(q);
     }
     catch (err) {
-        res.status(StatusCode.BAD_REQUEST).json({ status: StatusCode.BAD_REQUEST, message: 'Invalid parameters' });
-        return;
+        const error = err as ValidationError;
+        throw new JoiExceptions(error);
     }
 
     const param: IQueryChapter = {

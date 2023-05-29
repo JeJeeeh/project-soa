@@ -1,8 +1,8 @@
-import hasBearerToken from './hasBearerToken';
+import hasValidBearerToken from './hasValidBearerToken';
 import injectApiKey from './injectApiKey';
 
 const middlewares = {
-    hasBearerToken,
+    hasValidBearerToken,
     injectApiKey,
 };
 
