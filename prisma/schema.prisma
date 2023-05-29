@@ -61,3 +61,11 @@ model Subcollection {
   collectionId Int
   collection   Collection @relation(fields: [collectionId], references: [id])
 }
+
+model DailyBread {
+  id        Int      @id @default(autoincrement())
+  bibleId   String
+  verseId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
