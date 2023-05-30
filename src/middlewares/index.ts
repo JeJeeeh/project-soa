@@ -7,7 +7,7 @@ const middlewares = {
     hasValidBearerToken,
     injectApiKey,
     hasDailyBread,
-    hasApiHits
+    hasApiHits,
 };
 
 export default middlewares;
