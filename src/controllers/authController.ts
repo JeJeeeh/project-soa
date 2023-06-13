@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 import { ValidationError } from 'joi';
 import { JoiExceptions } from '../exceptions/joiException';
 import { ForbiddenExceptions, NotFoundExceptions, UnauthorizedExceptions } from '../exceptions/clientException';
-import { IJwtPayload } from '../interfaces/jwtInterface';
+import { IJwtPayload, IJwtRefreshPayload } from '../interfaces/jwtInterface';
 
 interface IRegister {
     username: string;
@@ -131,11 +131,15 @@ const refreshToken = async (req: Request, res: Response): Promise<Response> => {
 
     try {
         const jwtResult = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET as string);
-        const payload = jwtResult as IJwtPayload;
+        const payload = jwtResult as IJwtRefreshPayload;
+
+        if (payload.username !== user.username) {
+            throw new ForbiddenExceptions('Forbidden');
+        }
 
         return res.status(StatusCode.OK).json({
             message: 'Token refreshed successfully',
-            access_token: generateAccessToken(payload.id, payload.role_id),
+            access_token: generateAccessToken(user.id, user.role_id),
         });
     } catch (error) {
         throw new ForbiddenExceptions('Forbidden');

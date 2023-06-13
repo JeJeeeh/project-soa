@@ -17,7 +17,7 @@ router.get('/:id', middlewares.hasValidBearerToken, (req: Request, res: Response
     void getSingleCollection(req, res).catch(next);
 });
 
-router.put('/:id', middlewares.hasValidBearerToken, (req: Request, res: Response, next: NextFunction) => {
+router.put('/:id', middlewares.hasValidBearerToken, multerConfig.single('image'), (req: Request, res: Response, next: NextFunction) => {
     void editCollection(req, res).catch(next);
 });
 

@@ -25,6 +25,7 @@ const basePrefix = '/api/v1';
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
 
 app.set('Content-Type', 'application/json');
 app.set('x-powered-by', false);

@@ -4,3 +4,8 @@ export interface IJwtPayload {
     iat: number;
     exp: number;
 }
+export interface IJwtRefreshPayload {
+    username: string;
+    iat: number;
+    exp: number;
+}

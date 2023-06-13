@@ -127,6 +127,8 @@ export const addCollection = async (
 
     const collection = await insertCollection(newCollection);
 
+    let imagePath: string | null = null;
+
     if (req.file) {
         const fileInfo = await fileTypeFromBuffer(req.file.buffer);
 
@@ -138,9 +140,21 @@ export const addCollection = async (
             const uniqueSuffix = `${ Date.now() }-${ Math.round(Math.random() * 1E9) }`;
             const extname = path.extname(req.file.originalname);
 
-            writeFile(`./uploads/${ req.file.fieldname + '-' + uniqueSuffix + extname }`, req.file.buffer, () => {
+            imagePath = `/uploads/${ req.file.fieldname + '-' + uniqueSuffix + extname }`;
+
+            writeFile(`.${ imagePath }`, req.file.buffer, () => {
                 console.log('File uploaded successfully!');
-                // add path into db
+                void prisma.collection.update({
+                    where: {
+                        id: collection?.id,
+                    },
+                    data: {
+                        // eslint-disable-next-line camelcase
+                        image_url: imagePath,
+                    },
+                }).catch((err) => {
+                    console.log(err);
+                });
             });
         }
     }
@@ -150,6 +164,8 @@ export const addCollection = async (
         data: {
             id: collection?.id,
             name: collection?.name,
+            // eslint-disable-next-line camelcase
+            image_path: imagePath ? `${ process.env.HOST_URL as string }${ imagePath }` : null,
             description: collection?.description,
         },
     });
@@ -186,7 +202,11 @@ export const getSingleCollection = async (
 
     res.status(StatusCode.OK).json({
         message: 'Success get collection',
-        data: collection,
+        data: {
+            ...collection,
+            // eslint-disable-next-line camelcase
+            image_url: collection.image_url ? `${ process.env.HOST_URL as string }${ collection.image_url }` : null,
+        },
     });
 };
 
@@ -202,7 +222,13 @@ export const getAllCollection = async (
 
     res.status(StatusCode.OK).json({
         message: 'Success get collection',
-        data: collections,
+        data: collections.map((collection) => {
+            return {
+                ...collection,
+                // eslint-disable-next-line camelcase
+                image_url: collection.image_url ? `${ process.env.HOST_URL as string }${ collection.image_url }` : null,
+            };
+        }),
     });
 };
 
@@ -212,6 +238,8 @@ export const editCollection = async (
 ): Promise<void> => {
     const id = Number(req.params.id);
     const body = req.body as IBodyCollection;
+
+    const { fileTypeFromBuffer } = await (eval('import("file-type")') as Promise<typeof import('file-type')>);
 
     const regexQuery = new RegExp(/^[^:].*$/);
     const schema: ObjectSchema = Joi.object({
@@ -247,10 +275,45 @@ export const editCollection = async (
     };
 
     const result = await updateCollection(c);
+    let imagePath: string | null = null;
+
+    if (req.file) {
+        const fileInfo = await fileTypeFromBuffer(req.file.buffer);
+
+        if (fileInfo) {
+            if (fileInfo.mime !== 'image/jpeg' && fileInfo.mime !== 'image/png') {
+                throw new BadRequestExceptions('Invalid file type, only JPEG and PNG are allowed!');
+            }
+
+            const uniqueSuffix = `${ Date.now() }-${ Math.round(Math.random() * 1E9) }`;
+            const extname = path.extname(req.file.originalname);
+
+            imagePath = `/uploads/${ req.file.fieldname + '-' + uniqueSuffix + extname }`;
+
+            writeFile(`.${ imagePath }`, req.file.buffer, () => {
+                console.log('File uploaded successfully!');
+                void prisma.collection.update({
+                    where: {
+                        id: collection?.id,
+                    },
+                    data: {
+                        // eslint-disable-next-line camelcase
+                        image_url: imagePath,
+                    },
+                }).catch((err) => {
+                    console.log(err);
+                });
+            });
+        }
+    }
 
     res.status(StatusCode.OK).json({
         message: 'Success update collection',
-        data: result,
+        data: {
+            ...result,
+            // eslint-disable-next-line camelcase
+            image_url: imagePath ? `${ process.env.HOST_URL as string }${ imagePath }` : null,
+        },
     });
 };
 
