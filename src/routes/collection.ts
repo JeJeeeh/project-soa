@@ -2,13 +2,14 @@ import { Router, Response, Request, NextFunction } from 'express';
 const router: Router = Router();
 import middlewares from '../middlewares';
 import { addCollection, getAllCollection, getSingleCollection, editCollection, deleteCollection } from '../controllers/collectionController';
+import multerConfig from '../config/multerConfig';
 
 router.get('/', middlewares.hasValidBearerToken, (req: Request, res: Response, next: NextFunction) => {
     void getAllCollection(req, res).catch(next);
 });
 
 
-router.post('/', middlewares.hasValidBearerToken, (req: Request, res: Response, next: NextFunction) => {
+router.post('/', middlewares.hasValidBearerToken, multerConfig.single('image'), (req: Request, res: Response, next: NextFunction) => {
     void addCollection(req, res).catch(next);
 });
 

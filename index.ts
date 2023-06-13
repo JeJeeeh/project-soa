@@ -41,7 +41,7 @@ app.use(`${ basePrefix }/database`, databaseRoutes);
 
 app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
 	console.log(err);
-	
+
 	if (err instanceof BibleExceptions) {
 		res.status(err.statusCode).json({
 			status: err.statusCode,

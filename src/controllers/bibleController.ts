@@ -80,6 +80,10 @@ export const getBibles = async (req: Request, res: Response): Promise<void> => {
         return rest;
     });
 
+    if (!bible.length) {
+        throw new BadRequestExceptions('Bible not found');
+    }
+
     res.status(StatusCode.OK).json(bible);
     return;
 };

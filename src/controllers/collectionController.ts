@@ -7,6 +7,8 @@ import Joi, { ObjectSchema, ValidationError } from 'joi';
 import { JoiExceptions } from '../exceptions/joiException';
 import { BadRequestExceptions, NotFoundExceptions, TooManyRequestsExceptions } from '../exceptions/clientException';
 import { IJwtPayload } from '../interfaces/jwtInterface';
+import { writeFile } from 'fs';
+import path from 'path';
 
 async function getUser(id: number): Promise<User | null> {
     const user = await prisma.user.findUnique({
@@ -86,9 +88,12 @@ export const addCollection = async (
 ): Promise<void> => {
     const body = req.body as IBodyCollection;
 
+    const { fileTypeFromBuffer } = await (eval('import("file-type")') as Promise<typeof import('file-type')>);
+
     const schema: ObjectSchema = Joi.object({
         name: Joi.string().required(),
         description: Joi.string().optional().allow('', null),
+        image: Joi.any(),
     });
 
     try {
@@ -121,6 +126,24 @@ export const addCollection = async (
     };
 
     const collection = await insertCollection(newCollection);
+
+    if (req.file) {
+        const fileInfo = await fileTypeFromBuffer(req.file.buffer);
+
+        if (fileInfo) {
+            if (fileInfo.mime !== 'image/jpeg' && fileInfo.mime !== 'image/png') {
+                throw new BadRequestExceptions('Invalid file type, only JPEG and PNG are allowed!');
+            }
+
+            const uniqueSuffix = `${ Date.now() }-${ Math.round(Math.random() * 1E9) }`;
+            const extname = path.extname(req.file.originalname);
+
+            writeFile(`./uploads/${ req.file.fieldname + '-' + uniqueSuffix + extname }`, req.file.buffer, () => {
+                console.log('File uploaded successfully!');
+                // add path into db
+            });
+        }
+    }
 
     res.status(StatusCode.CREATED).json({
         message: 'Success add collection',

@@ -1,6 +1,7 @@
 export interface IBodyCollection {
-	name: string;
-	description: string;
+    name: string;
+    description: string;
+    image: string;
 }
 
 export interface IDataCollection {
