@@ -6,6 +6,7 @@ export interface IJwtPayload {
 }
 export interface IJwtRefreshPayload {
     username: string;
+    role_id: number;
     iat: number;
     exp: number;
 }

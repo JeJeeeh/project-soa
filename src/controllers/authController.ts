@@ -56,7 +56,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     const accessToken = generateAccessToken(user.id, user.role_id);
-    const refreshToken = await generateRefreshToken(user.username);
+    const refreshToken = await generateRefreshToken(user.username, user.role_id);
     if (!refreshToken) {
         throw new Error('Something went wrong');
     }
@@ -292,8 +292,8 @@ function generateAccessToken(id: number, role_id: number): string {
     return accessToken;
 }
 
-async function generateRefreshToken(username: string): Promise<string | null> {
-    const refreshToken = jwt.sign({ username: username }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: process.env.REFRESH_TOKEN_TTL });
+async function generateRefreshToken(username: string, role_id: number): Promise<string | null> {
+    const refreshToken = jwt.sign({ username: username, role_id: role_id }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: process.env.REFRESH_TOKEN_TTL });
     try {
         await prisma.user.update({
             where: {
