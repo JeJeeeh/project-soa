@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 import { ValidationError } from 'joi';
 import { JoiExceptions } from '../exceptions/joiException';
 import { ForbiddenExceptions, NotFoundExceptions, UnauthorizedExceptions } from '../exceptions/clientException';
-import { IJwtPayload, IJwtRefreshPayload } from '../interfaces/jwtInterface';
+import { IJwtRefreshPayload } from '../interfaces/jwtInterface';
 
 interface IRegister {
     username: string;
@@ -195,12 +195,12 @@ const upgradeAccount = async (req: Request, res: Response): Promise<Response> =>
 
     try {
         const jwtResult = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET as string);
-        const payload = jwtResult as IJwtPayload;
+        const payload = jwtResult as IJwtRefreshPayload;
 
         if (payload.role_id === 1) {
             await prisma.user.update({
                 where: {
-                    id: payload.id,
+                    username: payload.username,
                 },
                 data: {
                     role_id: 2,

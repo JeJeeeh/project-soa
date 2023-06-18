@@ -220,16 +220,21 @@ export const getAllCollection = async (
         throw new NotFoundExceptions('Collection not found');
     }
 
-    res.status(StatusCode.OK).json({
-        message: 'Success get collection',
-        data: collections.map((collection) => {
-            return {
-                ...collection,
-                // eslint-disable-next-line camelcase
-                image_url: collection.image_url ? `${ process.env.HOST_URL as string }${ collection.image_url }` : null,
-            };
-        }),
+    const resCollections = collections.length === 0 ? "No Collections" : collections.map((collection) => {
+        return {
+            ...collection,
+            // eslint-disable-next-line camelcase
+            image_url: collection.image_url ? `${ process.env.HOST_URL as string }${ collection.image_url }` : null,
+        };
     });
+    
+    res.status(StatusCode.OK).json(
+        {
+            message: 'Success get collection',
+            data: resCollections,
+        },
+    );
+    return;
 };
 
 export const editCollection = async (
