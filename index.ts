@@ -111,5 +111,5 @@ app.all('*', (req: Request, res: Response) => {
 });
 
 app.listen(port, () => {
-	console.log(`Server is running at ${ process.env.HOST_URL as string }${ port }`);
+	console.log(`Server is running at ${ port }`);
 });
