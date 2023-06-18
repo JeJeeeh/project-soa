@@ -1,0 +1,143 @@
+{
+	"info": {
+		"_postman_id": "095305bc-b0c1-46ab-ba64-fecc71c1b05b",
+		"name": "Demo API Bibles",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24652077",
+		"_collection_link": "https://ambasing69.postman.co/workspace/Project-SOA-Bible~bbc90d5e-5ff2-453b-87ee-37e95bc07495/collection/22928632-095305bc-b0c1-46ab-ba64-fecc71c1b05b?action=share&creator=24652077&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Get Bibles",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "api-key",
+						"value": "16efcd5b733ee9f66ae8923e7ba1dbe6",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/bibles?name=testament",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bibles"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "testament"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/bibles/:bibleId/books",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bibles",
+						":bibleId",
+						"books"
+					],
+					"variable": [
+						{
+							"key": "bibleId",
+							"value": "32339cf2f720ff8e-01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Chapters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/bibles/:bibleId/books/:bookId/chapters",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bibles",
+						":bibleId",
+						"books",
+						":bookId",
+						"chapters"
+					],
+					"variable": [
+						{
+							"key": "bibleId",
+							"value": "32339cf2f720ff8e-01"
+						},
+						{
+							"key": "bookId",
+							"value": "MAT"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{api-key}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "api-key",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://api.scripture.api.bible/v1",
+			"type": "string"
+		},
+		{
+			"key": "api-key",
+			"value": "16efcd5b733ee9f66ae8923e7ba1dbe6",
+			"type": "string"
+		}
+	]
+}

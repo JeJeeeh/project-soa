@@ -1,0 +1,817 @@
+{
+	"info": {
+		"_postman_id": "a80f3cc9-d589-4b09-a1da-f2107c8497ac",
+		"name": "Project SOA",
+		"description": "Providing Bible Service to help make the world a better place 😇😇",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24652077",
+		"_collection_link": "https://ambasing69.postman.co/workspace/Project-SOA-Bible~bbc90d5e-5ff2-453b-87ee-37e95bc07495/collection/22928632-a80f3cc9-d589-4b09-a1da-f2107c8497ac?action=share&creator=24652077&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Bibles",
+			"item": [
+				{
+					"name": "Get Bibles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/bibles?language&abbreviation&name&ids",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"bibles"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": null,
+									"description": "ISO 639-3 3 Digit Code"
+								},
+								{
+									"key": "abbreviation",
+									"value": null
+								},
+								{
+									"key": "name",
+									"value": null
+								},
+								{
+									"key": "ids",
+									"value": null,
+									"description": "comma seperated ids"
+								}
+							]
+						},
+						"description": "- length\n- data"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bible",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/bibles/:bibleId",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"bibles",
+								":bibleId"
+							],
+							"variable": [
+								{
+									"key": "bibleId",
+									"value": null
+								}
+							]
+						},
+						"description": "- data"
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "key",
+						"value": "api-key",
+						"type": "string"
+					},
+					{
+						"key": "value",
+						"value": "{{api-key}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "Get Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/bibles/:bibleId/books?include-chapters&include-chapters-and-sections",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"bibles",
+								":bibleId",
+								"books"
+							],
+							"query": [
+								{
+									"key": "include-chapters",
+									"value": null,
+									"description": "boolean (true/false)"
+								},
+								{
+									"key": "include-chapters-and-sections",
+									"value": null,
+									"description": "boolean (true/false)"
+								}
+							],
+							"variable": [
+								{
+									"key": "bibleId",
+									"value": null,
+									"description": "required"
+								}
+							]
+						},
+						"description": "- length\n- data"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/bibles/:bibleId/books/:bookId?include-chapters",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"bibles",
+								":bibleId",
+								"books",
+								":bookId"
+							],
+							"query": [
+								{
+									"key": "include-chapters",
+									"value": null,
+									"description": "boolean (true/false)"
+								}
+							],
+							"variable": [
+								{
+									"key": "bibleId",
+									"value": null,
+									"description": "required"
+								},
+								{
+									"key": "bookId",
+									"value": null,
+									"description": "required"
+								}
+							]
+						},
+						"description": "- data"
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "key",
+						"value": "api-key",
+						"type": "string"
+					},
+					{
+						"key": "value",
+						"value": "{{api-key}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Chapters",
+			"item": [
+				{
+					"name": "Get Chapters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/bibles/:bibleId/books/:bookId/chapters",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"bibles",
+								":bibleId",
+								"books",
+								":bookId",
+								"chapters"
+							],
+							"variable": [
+								{
+									"key": "bibleId",
+									"value": null,
+									"description": "required"
+								},
+								{
+									"key": "bookId",
+									"value": null,
+									"description": "required"
+								}
+							]
+						},
+						"description": "- length\n- data"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Chapter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/bibles/:bibleId/chapters/:chapterId?content-type&include-notes&include-tiles&include-chapter-numbers&include-verse-numbers&include-verse-spans&parallels",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"bibles",
+								":bibleId",
+								"chapters",
+								":chapterId"
+							],
+							"query": [
+								{
+									"key": "content-type",
+									"value": null,
+									"description": "(html/json/text)"
+								},
+								{
+									"key": "include-notes",
+									"value": null,
+									"description": "boolean"
+								},
+								{
+									"key": "include-tiles",
+									"value": null,
+									"description": "boolean"
+								},
+								{
+									"key": "include-chapter-numbers",
+									"value": null,
+									"description": "boolean"
+								},
+								{
+									"key": "include-verse-numbers",
+									"value": null,
+									"description": "boolean"
+								},
+								{
+									"key": "include-verse-spans",
+									"value": null,
+									"description": "boolean"
+								},
+								{
+									"key": "parallels",
+									"value": null,
+									"description": "string (comma delimited)"
+								}
+							],
+							"variable": [
+								{
+									"key": "bibleId",
+									"value": null,
+									"description": "required"
+								},
+								{
+									"key": "chapterId",
+									"value": null,
+									"description": "required"
+								}
+							]
+						},
+						"description": "- data"
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "key",
+						"value": "api-key",
+						"type": "string"
+					},
+					{
+						"key": "value",
+						"value": "{{api-key}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Verses",
+			"item": [
+				{
+					"name": "Get Verses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/bibles/:bibleId/chapters/:chapterId/verses",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"bibles",
+								":bibleId",
+								"chapters",
+								":chapterId",
+								"verses"
+							],
+							"variable": [
+								{
+									"key": "bibleId",
+									"value": null,
+									"description": "required"
+								},
+								{
+									"key": "chapterId",
+									"value": null,
+									"description": "required"
+								}
+							]
+						},
+						"description": "- length\n- data"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Verse",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/bibles/:bibleId/verses/:verseId?content-type&include-notes&include-titles&include-chapter-numbers&include-verse-numbers&include-verse-spans&parallels&use-org-id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"bibles",
+								":bibleId",
+								"verses",
+								":verseId"
+							],
+							"query": [
+								{
+									"key": "content-type",
+									"value": null,
+									"description": "(html/json/text)"
+								},
+								{
+									"key": "include-notes",
+									"value": null,
+									"description": "boolean"
+								},
+								{
+									"key": "include-titles",
+									"value": null,
+									"description": "boolean"
+								},
+								{
+									"key": "include-chapter-numbers",
+									"value": null,
+									"description": "boolean"
+								},
+								{
+									"key": "include-verse-numbers",
+									"value": null,
+									"description": "boolean"
+								},
+								{
+									"key": "include-verse-spans",
+									"value": null,
+									"description": "boolean"
+								},
+								{
+									"key": "parallels",
+									"value": null,
+									"description": "string (comma delimited)"
+								},
+								{
+									"key": "use-org-id",
+									"value": null,
+									"description": "boolean"
+								}
+							],
+							"variable": [
+								{
+									"key": "bibleId",
+									"value": null,
+									"description": "required"
+								},
+								{
+									"key": "verseId",
+									"value": null,
+									"description": "required"
+								}
+							]
+						},
+						"description": "- data"
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "{{api-key}}",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "api-key",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Collection",
+			"item": [
+				{
+					"name": "Get Collections",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get Collection",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Add Collection",
+					"request": {
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update Collection",
+					"request": {
+						"method": "PUT",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Collection",
+					"request": {
+						"method": "DELETE",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "key",
+						"value": "x-auth-token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Item",
+			"item": [
+				{
+					"name": "Get Items",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get Item",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Add Item",
+					"request": {
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update Item",
+					"request": {
+						"method": "PUT",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Item",
+					"request": {
+						"method": "DELETE",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "key",
+						"value": "x-auth-token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Shared",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "",
+									"description": "required",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"description": "required",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "- message\n- data\n    - user\n    - token"
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "ambasing",
+									"description": "required",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "tes",
+									"description": "required",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "adsadad@mail.com",
+									"description": "required, email",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "aaaaaaaa",
+									"description": "required",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "aaaaaaaa",
+									"description": "required",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"register"
+							]
+						},
+						"description": "- message\n- data\n    - user"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000",
+							"host": [
+								"localhost"
+							],
+							"port": "3000"
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "localhost:3000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "api-key",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

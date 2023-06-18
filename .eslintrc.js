@@ -1,0 +1,35 @@
+module.exports = {
+	env: {
+		es2021: true,
+		node: true,
+	},
+	extends: [
+		'eslint:recommended',
+		'plugin:@typescript-eslint/recommended',
+		'plugin:@typescript-eslint/recommended-requiring-type-checking',
+		'prettier',
+	],
+	overrides: [],
+	parser: '@typescript-eslint/parser',
+	parserOptions: {
+		ecmaVersion: 'latest',
+		sourceType: 'module',
+		project: './tsconfig.json',
+		tsconfigRootDir: __dirname,
+	},
+	ignorePatterns: ['**/*.js'],
+	plugins: ['@typescript-eslint'],
+	root: true,
+	rules: {
+		semi: ['error', 'always'],
+		eqeqeq: ['error', 'always'],
+		quotes: ['error', 'single'],
+		'object-curly-spacing': ['error', 'always'],
+		'array-bracket-spacing': ['error', 'always'],
+		'comma-dangle': ['error', 'always-multiline'],
+		'comma-spacing': ['error', { before: false, after: true }],
+		'no-multi-spaces': ['error'],
+		'no-duplicate-imports': 'error',
+		camelcase: 'error',
+	},
+};

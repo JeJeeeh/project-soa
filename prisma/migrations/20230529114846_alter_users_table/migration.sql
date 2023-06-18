@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `user` MODIFY `last_request` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3);

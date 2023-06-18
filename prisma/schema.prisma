@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
 }
 
 datasource db {
@@ -10,21 +11,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Role {
+  id              Int      @id @default(autoincrement())
+  name            String
+  max_api_hits    Int
+  max_collection  Int
+  has_daily_bread Boolean
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  users           User[]
+}
+
 model User {
-  id          Int          @id @default(autoincrement())
-  username    String       @unique
-  name        String
-  password    String
-  collections Collection[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id            Int          @id @default(autoincrement())
+  username      String       @unique
+  email         String       @unique
+  name          String
+  password      String
+  role_id       Int
+  role          Role         @relation(fields: [role_id], references: [id])
+  refresh_token String?
+  api_hits      Int          @default(0)
+  last_request  DateTime?    @default(now())
+  collections   Collection[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 }
 
 model Collection {
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String
+  image_url     String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  userId        Int
+  user          User            @relation(fields: [userId], references: [id])
+  Subcollection Subcollection[]
+}
+
+model Subcollection {
+  id           Int        @id @default(autoincrement())
+  title        String
+  bibleId      String
+  bookId       String
+  chapterId    String
+  verseId      String
+  content      String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  collectionId Int
+  collection   Collection @relation(fields: [collectionId], references: [id])
+}
+
+model DailyBread {
   id        Int      @id @default(autoincrement())
-  name      String
+  bibleId   String
+  verseId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
 }
